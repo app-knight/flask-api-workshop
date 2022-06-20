@@ -1,0 +1,42 @@
+[{
+    "endpoint": "/api/students",
+    "description": "Return all students list",
+    "method": "GET",
+    "responsecode": 200
+}, {
+    "endpoint": "/api/students/get/<id>",
+    "description": "Return student data by id",
+    "method": "GET",
+    "responsecode": 200
+}, {
+    "endpoint": "/api/students/add",
+    "description": "Add new student to database",
+    "method": "POST",
+    "responsecode": 201
+}, {
+    "endpoint": "/api/students/modify/<id>",
+    "description": "Modifies student data field by field",
+    "method": "PATCH",
+    "responsecode": 200
+}, {
+    "endpoint": "/api/students/change/<id>",
+    "description": "Change all student data",
+    "method": "PUT",
+    "responsecode": 200
+}, {
+    "endpoint": "/api/students/delete/<id>",
+    "description": "Delete student from database",
+    "method": "DELETE",
+    "responsecode": 200
+}, {
+    "endpoint": "/api/health-check/ok",
+    "description": "Returns success code 200",
+    "method": "GET",
+    "responsecode": 200
+}, {
+    "endpoint": "/api/health-check/bad",
+    "description": "Returns error code 500",
+    "method": "GET",
+    "responsecode": 500
+}
+]

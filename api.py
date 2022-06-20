@@ -1,3 +1,4 @@
+import json
 import os
 
 from flask import Flask, jsonify, request
@@ -13,6 +14,7 @@ db_user = os.environ.get('DB_USERNAME')
 db_pass = os.environ.get('DB_PASSWORD')
 db_hostname = os.environ.get('DB_HOSTNAME')
 db_name = os.environ.get('DB_NAME')
+description_file = os.environ.get('DESCRIPTION_FILENAME')
 
 DB_URI = 'mysql+pymysql://{db_username}:{db_password}@{db_host}/{database}'.format(db_username=db_user, db_password=db_pass, db_host=db_hostname, database=db_name)
 
@@ -22,6 +24,9 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = DB_URI
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
+f = open(description_file)
+api_description = json.load(f)
+f.close()
 
 class Student(db.Model):
     tablename = "student"
@@ -60,7 +65,7 @@ def home():
 
 @app.route('/api', methods = ['GET'])
 def api_main():
-    return jsonify('Hello, World!'), 200
+    return jsonify(api_description), 200
 
 @app.route('/api/students', methods=['GET'])
 def get_all_students():
@@ -90,6 +95,46 @@ def add_student():
     data = serializer.dump(new_student)
     return jsonify(data), 201
 
+@app.route('/api/students/modify/<int:id>', methods = ['PATCH'])
+def modify_student(id):
+    json_data = request.get_json()
+    student_modify = Student.get_by_id(id)
+    for field in ('name', 'email', 'age', 'cellphone'):
+        if json_data.get(field):
+            setattr(student_modify, field, json_data.get(field))
+    student_modify.save()
+    serializer = StudentSchema()
+    response = serializer.dump(student_modify)
+    return jsonify(response), 200
+
+@app.route('/api/students/change/<int:id>', methods = ['PUT'])
+def change_student(id):
+    json_data = request.get_json()
+    student_change = Student.get_by_id(id)
+    for field in ('name', 'email', 'age', 'cellphone'):
+        setattr(student_change, field, json_data.get(field))
+    student_change.save()
+    serializer = StudentSchema()
+    response = serializer.dump(student_change)
+    return jsonify(response), 200
+
+@app.route('/api/students/delete/<int:id>', methods = ['DELETE'])
+def delete_student(id):
+    student_delete = Student.get_by_id(id)
+    student_delete.delete()
+    serializer = StudentSchema()
+    response = serializer.dump(student_delete)
+    return jsonify(response), 200
+
+@app.route('/api/health-check/ok', methods = ['GET'])
+def healthcheck_ok():
+    response = json.loads('{"result": "ok"}')
+    return jsonify(response), 200
+
+@app.route('/api/health-check/bad', methods = ['GET'])
+def healthcheck_bad():
+    response = json.loads('{"result": "bad request"}')
+    return jsonify(response), 500
 
 if __name__ == '__main__':
     if not database_exists(engine.url):
