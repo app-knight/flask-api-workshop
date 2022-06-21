@@ -1,0 +1,57 @@
+version: '3.9'
+services:
+  app:
+    container_name: students_api
+    image: appknight/students-api:1.0
+    env_file:
+      - .env
+    ports:
+      - '5000:5000'
+    expose:
+      - '5000'
+    restart: always
+    environment:
+      PORT: 8080
+      DB_USERNAME: ${DB_USERNAME}
+      DB_PASSWORD: ${DB_PASSWORD}
+      DB_HOSTNAME: db
+      DB_NAME: ${DB_NAME}
+      FLASK_APP: ${FLASK_APP}
+      FLASK_ENVIRONMENT: ${FLASK_ENVIRONMENT}
+      DESCRIPTION_FILENAME: ${DESCRIPTION_FILENAME}
+    depends_on:
+      db:
+        condition: service_healthy
+    networks:
+      - students_api
+  
+  db:
+    image: mysql:8.0
+    env_file:
+      - .env
+    container_name: students_db
+    ports:
+      - '3306:3306'
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+      MYSQL_USER: ${DB_USERNAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
+      TZ: UTC
+    healthcheck:
+      test: ["CMD", "mysqladmin" ,"ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - api-db:/var/lib/mysql
+    networks:
+      - students_api
+
+networks:
+  students_api:
+    name: studentsapi
+
+volumes:
+  api-db:
