@@ -3,7 +3,7 @@ name: Students-API-testing
 on:
   push:
     branches:
-      - master
+      - main
 
 env:
   REGISTRY: appknight/students-api
