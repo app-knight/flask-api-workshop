@@ -16,8 +16,9 @@ db_hostname = os.environ.get('DB_HOSTNAME')
 db_name = os.environ.get('DB_NAME')
 description_file = os.environ.get('DESCRIPTION_FILENAME')
 
-DB_URI = 'mysql+pymysql://{db_username}:{db_password}@{db_host}/{database}'.format(\
-    db_username=db_user, db_password=db_pass, db_host=db_hostname, database=db_name)
+DB_URI = 'mysql+pymysql://{db_username}:{db_password}@{db_host}/ \
+        {database}'.format(db_username=db_user, db_password=db_pass,
+                           db_host=db_hostname, database=db_name)
 
 engine = create_engine(DB_URI, echo=True)
 
@@ -93,7 +94,7 @@ def get_student(id):
 def add_student():
     json_data = request.get_json()
     new_student = Student(
-        name= json_data.get('name'),
+        name=json_data.get('name'),
         email=json_data.get('email'),
         age=json_data.get('age'),
         cellphone=json_data.get('cellphone')
@@ -129,7 +130,7 @@ def change_student(id):
     return jsonify(response), 200
 
 
-@app.route('/api/students/delete/<int:id>', methods = ['DELETE'])
+@app.route('/api/students/delete/<int:id>', methods=['DELETE'])
 def delete_student(id):
     student_delete = Student.get_by_id(id)
     student_delete.delete()
@@ -138,13 +139,13 @@ def delete_student(id):
     return jsonify(response), 200
 
 
-@app.route('/api/health-check/ok', methods = ['GET'])
+@app.route('/api/health-check/ok', methods=['GET'])
 def healthcheck_ok():
     response = json.loads('{"result": "ok"}')
     return jsonify(response), 200
 
 
-@app.route('/api/health-check/bad', methods = ['GET'])
+@app.route('/api/health-check/bad', methods=['GET'])
 def healthcheck_bad():
     response = json.loads('{"result": "bad request"}')
     return jsonify(response), 500
