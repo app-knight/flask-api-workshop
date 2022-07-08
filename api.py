@@ -16,8 +16,8 @@ db_hostname = os.environ.get('DB_HOSTNAME')
 db_name = os.environ.get('DB_NAME')
 description_file = os.environ.get('DESCRIPTION_FILENAME')
 
-DB_URI = 'mysql+pymysql://{db_username}:{db_password}@{db_host}/{database}'.format(db_username=db_user, 
-                                            db_password=db_pass, db_host=db_hostname, database=db_name)
+DB_URI = 'mysql+pymysql://{db_username}:{db_password}@{db_host}/{database}'.format(\
+    db_username=db_user, db_password=db_pass, db_host=db_hostname, database=db_name)
 
 engine = create_engine(DB_URI, echo=True)
 
@@ -63,13 +63,15 @@ class StudentSchema(Schema):
     cellphone = fields.Str()
 
 
-@app.route('/', methods = ['GET'])
+@app.route('/', methods=['GET'])
 def home():
     return '<p>Hello from students API!</p>', 200
 
-@app.route('/api', methods = ['GET'])
+
+@app.route('/api', methods=['GET'])
 def api_main():
     return jsonify(api_description), 200
+
 
 @app.route('/api/students', methods=['GET'])
 def get_all_students():
@@ -78,14 +80,16 @@ def get_all_students():
     response = student_list.dump(students)
     return jsonify(response), 200
 
-@app.route('/api/students/get/<int:id>', methods = ['GET'])
+
+@app.route('/api/students/get/<int:id>', methods=['GET'])
 def get_student(id):
     student_info = Student.get_by_id(id)
     serializer = StudentSchema()
     response = serializer.dump(student_info)
     return jsonify(response), 200
 
-@app.route('/api/students/add', methods = ['POST'])
+
+@app.route('/api/students/add', methods=['POST'])
 def add_student():
     json_data = request.get_json()
     new_student = Student(
@@ -99,7 +103,8 @@ def add_student():
     data = serializer.dump(new_student)
     return jsonify(data), 201
 
-@app.route('/api/students/modify/<int:id>', methods = ['PATCH'])
+
+@app.route('/api/students/modify/<int:id>', methods=['PATCH'])
 def modify_student(id):
     json_data = request.get_json()
     student_modify = Student.get_by_id(id)
@@ -111,7 +116,8 @@ def modify_student(id):
     response = serializer.dump(student_modify)
     return jsonify(response), 200
 
-@app.route('/api/students/change/<int:id>', methods = ['PUT'])
+
+@app.route('/api/students/change/<int:id>', methods=['PUT'])
 def change_student(id):
     json_data = request.get_json()
     student_change = Student.get_by_id(id)
@@ -122,6 +128,7 @@ def change_student(id):
     response = serializer.dump(student_change)
     return jsonify(response), 200
 
+
 @app.route('/api/students/delete/<int:id>', methods = ['DELETE'])
 def delete_student(id):
     student_delete = Student.get_by_id(id)
@@ -130,10 +137,12 @@ def delete_student(id):
     response = serializer.dump(student_delete)
     return jsonify(response), 200
 
+
 @app.route('/api/health-check/ok', methods = ['GET'])
 def healthcheck_ok():
     response = json.loads('{"result": "ok"}')
     return jsonify(response), 200
+
 
 @app.route('/api/health-check/bad', methods = ['GET'])
 def healthcheck_bad():
