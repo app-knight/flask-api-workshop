@@ -1,11 +1,10 @@
-FROM python:3.10
+FROM python:3.10-alpine
 
 WORKDIR /usr/src/app
 
 COPY ./requirments.txt ./
 
-RUN pip install --upgrade pip
-RUN pip install --no-cache-dir -r requirments.txt
+RUN pip install --upgrade pip && pip install --no-cache-dir -r requirments.txt
 
 COPY . .
 
