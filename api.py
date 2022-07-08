@@ -16,7 +16,8 @@ db_hostname = os.environ.get('DB_HOSTNAME')
 db_name = os.environ.get('DB_NAME')
 description_file = os.environ.get('DESCRIPTION_FILENAME')
 
-DB_URI = 'mysql+pymysql://{db_username}:{db_password}@{db_host}/{database}'.format(db_username=db_user, db_password=db_pass, db_host=db_hostname, database=db_name)
+DB_URI = 'mysql+pymysql://{db_username}:{db_password}@{db_host}/{database}'.format(db_username=db_user, 
+                                            db_password=db_pass, db_host=db_hostname, database=db_name)
 
 engine = create_engine(DB_URI, echo=True)
 
@@ -27,6 +28,7 @@ db = SQLAlchemy(app)
 f = open(description_file)
 api_description = json.load(f)
 f.close()
+
 
 class Student(db.Model):
     tablename = "student"
@@ -52,12 +54,14 @@ class Student(db.Model):
         db.session.delete(self)
         db.session.commit()
 
+
 class StudentSchema(Schema):
     id = fields.Integer()
     name = fields.Str()
     email = fields.Str()
     age = fields.Integer()
     cellphone = fields.Str()
+
 
 @app.route('/', methods = ['GET'])
 def home():
@@ -135,6 +139,7 @@ def healthcheck_ok():
 def healthcheck_bad():
     response = json.loads('{"result": "bad request"}')
     return jsonify(response), 500
+
 
 if __name__ == '__main__':
     if not database_exists(engine.url):
