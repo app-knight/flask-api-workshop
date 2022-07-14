@@ -76,4 +76,4 @@ jobs:
             git clone https://github.com/app-knight/flask-api-workshop.git
             cp .env ./flask-api-workshop/.env
             cd flask-api-workshop
-            TAG=${{TAG}} docker compose up -d --force-recreate
+            TAG=${{ TAG }} docker compose up -d --force-recreate
