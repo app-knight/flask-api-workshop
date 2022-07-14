@@ -72,8 +72,8 @@ jobs:
           hosts: '${{ env.HOST_1 }} ${{ env.HOST_2 }}'
           privateKey: ${{ secrets.PRIVATE_KEY }}
           command: |
-            rm -r students-api
+            rm -r flask-api-workshop 
             git clone https://github.com/app-knight/flask-api-workshop.git
-            cp .env ./students-api/.env
-            cd students-api
-            docker compose up -d --force-recreate --build-arg TAG=${{TAG}}
+            cp .env ./flask-api-workshop/.env
+            cd flask-api-workshop
+            TAG=${{TAG}} docker compose up -d --force-recreate
