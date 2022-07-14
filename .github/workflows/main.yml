@@ -67,9 +67,11 @@ jobs:
       - name:  Deploy to 2 EC2 instances via SSH action
         uses: JimCronqvist/action-ssh@master
         with:
-          hosts: '$ubuntu@{{ env.HOST_1 }} ubuntu@${{ env.HOST_2 }}'
+          hosts: 'ubuntu@$@{{ env.HOST_1 }} ubuntu@${{ env.HOST_2 }}'
           privateKey: ${{ secrets.PRIVATE_KEY }}
           command: |
+            docker stop $(docker ps -a -q)
+            docker rm $(docker ps -a -q)
             rm -r flask-api-workshop 
             git clone https://github.com/app-knight/flask-api-workshop.git
             cp .env ./flask-api-workshop/.env
