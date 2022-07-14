@@ -72,9 +72,8 @@ jobs:
           hosts: '${{ env.HOST_1 }} ${{ env.HOST_2 }}'
           privateKey: ${{ secrets.PRIVATE_KEY }}
           command: |
-            cd /home/ubuntu/
             rm -r students-api
-            git checkout https://github.com/app-knight/flask-api-workshop.git
+            git clone https://github.com/app-knight/flask-api-workshop.git
             cp .env ./students-api/.env
             cd students-api
-            TAG=${{ steps.commit_hash.outputs.commit_hash }} docker compose up --force-recreate
+            docker compose up -d --force-recreate --build-arg TAG=${{TAG}}
