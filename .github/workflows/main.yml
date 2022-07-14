@@ -62,9 +62,8 @@ jobs:
     env:
       HOST_1: 18.196.120.95
       HOST_2: 3.68.192.183
-      USERNAME: admin
+      USERNAME: ubuntu
     steps:
-
       - name:  Deploy to 2 EC2 instances via SSH action
         uses: JimCronqvist/action-ssh@master
         with:
@@ -76,3 +75,19 @@ jobs:
             cp .env ./flask-api-workshop/.env
             cd flask-api-workshop
             TAG=${{ needs.build_and_push.outputs.commit_hash }} docker compose up -d --force-recreate
+
+
+  check_status:
+    runs-on: ubuntu-latest
+    name: Check API status
+    needs: deploy
+    env:
+      HOST_1: http://18.196.120.95/api
+      HOST_2: http://3.68.192.183/api
+    steps:
+    - name: Check the deployed service URL
+      uses: jtalk/url-health-check-action@v2
+      with:
+        url: ${{ env.HOST_1 }}|${{ env.HOST_2 }}
+        max-attempts: 5
+        retry-delay: 5s
