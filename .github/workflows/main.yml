@@ -67,7 +67,7 @@ jobs:
       - name:  Deploy to 2 EC2 instances via SSH action
         uses: JimCronqvist/action-ssh@master
         with:
-          hosts: '${{ env.HOST_1 }} ${{ env.HOST_2 }}'
+          hosts: '$ubuntu@{{ env.HOST_1 }} ubuntu@${{ env.HOST_2 }}'
           privateKey: ${{ secrets.PRIVATE_KEY }}
           command: |
             rm -r flask-api-workshop 
