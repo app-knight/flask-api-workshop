@@ -70,8 +70,7 @@ jobs:
           hosts: 'ubuntu@${{ env.HOST_1 }} ubuntu@${{ env.HOST_2 }}'
           privateKey: ${{ secrets.PRIVATE_KEY }}
           command: |
-            docker stop $(docker ps -a -q)
-            docker rm $(docker ps -a -q)
+            docker stop $(docker ps -a -q) && docker rm $(docker ps -a -q)
             rm -r flask-api-workshop 
             git clone https://github.com/app-knight/flask-api-workshop.git
             cp .env ./flask-api-workshop/.env
@@ -84,8 +83,8 @@ jobs:
     name: Check API status
     needs: deploy
     env:
-      HOST_1: http://18.196.120.95/api
-      HOST_2: http://3.68.192.183/api
+      HOST_1: http://18.196.120.95:5000/api
+      HOST_2: http://3.68.192.183:5000/api
     steps:
     - name: Check the deployed service URL
       uses: jtalk/url-health-check-action@v2
