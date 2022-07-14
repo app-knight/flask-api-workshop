@@ -83,8 +83,8 @@ jobs:
     name: Check API status
     needs: deploy
     env:
-      HOST_1: http://18.196.120.95:5000/api
-      HOST_2: http://3.68.192.183:5000/api
+      HOST_1: http://18.196.120.95:5000/api/health-check/ok
+      HOST_2: http://3.68.192.183:5000/api/health-check/ok
     steps:
     - name: Check the deployed service URL
       uses: jtalk/url-health-check-action@v2
