@@ -2,7 +2,7 @@ version: '3.9'
 services:
   app:
     container_name: students_api
-    image: appknight/students-api:a304f84
+    image: appknight/students-api:${TAG} 
     env_file:
       - .env
     ports:

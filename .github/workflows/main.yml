@@ -54,3 +54,27 @@ jobs:
           push: true
           tags: |
             ${{ env.REGISTRY }}:${{ steps.commit_hash.outputs.commit_hash }}
+  
+  deploy:
+    runs-on: ubuntu-latest
+    name: Deploy
+    needs: build_and_push
+    env:
+      HOST_1: 18.196.120.95
+      HOST_2: 3.68.192.183
+      USERNAME: admin
+      TAG: ${{ needs.build_and_push.outputs.commit_hash }}
+    steps:
+
+      - name:  Deploy to 2 EC2 instances via SSH action
+        uses: JimCronqvist/action-ssh@master
+        with:
+          hosts: '${{ env.HOST_1 }} ${{ env.HOST_2 }}'
+          privateKey: ${{ secrets.PRIVATE_KEY }}
+          command: |
+            cd /home/ubuntu/
+            rm -r students-api
+            git checkout https://github.com/app-knight/flask-api-workshop.git
+            cp .env ./students-api/.env
+            cd students-api
+            TAG=${{ steps.commit_hash.outputs.commit_hash }} docker compose up --force-recreate
