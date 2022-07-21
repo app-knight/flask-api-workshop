@@ -55,19 +55,23 @@ jobs:
           tags: |
             ${{ env.REGISTRY }}:${{ steps.commit_hash.outputs.commit_hash }}
   
-  deploy:
+  deploy:      
     runs-on: ubuntu-latest
     name: Deploy
     needs: build_and_push
-    env:
-      HOST_1: 18.196.120.95
-      HOST_2: 3.68.192.183
-      USERNAME: ubuntu
+    strategy:
+      max-parallel: 2
+      matrix:
+        include:
+          - site: "staging-01"
+            host: "18.184.5.136"
+          - site: "staging-02"
+            host: "3.66.110.110"
     steps:
       - name:  Deploy to 2 EC2 instances via SSH action
         uses: JimCronqvist/action-ssh@master
         with:
-          hosts: 'ubuntu@${{ env.HOST_1 }} ubuntu@${{ env.HOST_2 }}'
+          hosts: 'ubuntu@${{ host }}'
           privateKey: ${{ secrets.PRIVATE_KEY }}
           command: |
             docker stop $(docker ps -a -q) && docker rm $(docker ps -a -q)
