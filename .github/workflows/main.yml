@@ -71,7 +71,7 @@ jobs:
       - name:  Deploy to 2 EC2 instances via SSH action
         uses: JimCronqvist/action-ssh@master
         with:
-          hosts: 'ubuntu@${{ host }}'
+          hosts: 'ubuntu@${{ matrix.host }}'
           privateKey: ${{ secrets.PRIVATE_KEY }}
           command: |
             docker stop $(docker ps -a -q) && docker rm $(docker ps -a -q)
@@ -87,8 +87,8 @@ jobs:
     name: Check API status
     needs: deploy
     env:
-      HOST_1: http://18.196.120.95:5000/api/health-check/ok
-      HOST_2: http://3.68.192.183:5000/api/health-check/ok
+      HOST_1: http://18.184.5.136:5000/api/health-check/ok
+      HOST_2: http://3.66.110.110:5000/api/health-check/ok
     steps:
     - name: Check the deployed service URL
       uses: jtalk/url-health-check-action@v2
